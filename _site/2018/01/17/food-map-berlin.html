@@ -75,7 +75,7 @@ var jekyllMaps = (function() {
       var markers = item.locations.map(createMarker)
 
       map.fitBounds(bounds)
-      google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+      google.maps.event.addListenerOnce(map, 'idle', function() {
         if (this.customZoom) this.setZoom(this.customZoom)
       })
       if (mapOptions.useCluster) {
@@ -96,7 +96,9 @@ var jekyllMaps = (function() {
         position: position,
         title: location.title,
         image: location.image,
-        url: location.url.length > 0 ? mapOptions.baseUrl + location.url : '',
+        icon: location.icon || mapOptions.markerIcon,
+        url: markerUrl(mapOptions.baseUrl, location.url),
+        url_text: location.url_text,
         map: map
       })
       if (mapOptions.showMarkerPopup) marker.addListener('click', markerPopup)
@@ -104,17 +106,25 @@ var jekyllMaps = (function() {
       return marker
     }
 
+    function markerUrl(baseUrl, url) {
+      if (/^(https?|\/\/)/.test(url)) return url
+
+      return url.length > 0 ? baseUrl + url : ''
+    }
+
     function markerPopup() {
-      var contentHtml =
-        '<div class="map-info-window"><h5>' + this.title + '</h5>'
-      var imageHtml = '<img src="' + this.image + '" alt="' + this.title + '"/>'
+      var content = '<div class="map-info-window"><h5>' + this.title + '</h5>'
+      var imageTag =
+        this.image.length > 0 &&
+        '<img src="' + this.image + '" alt="' + this.title + '"/>'
       if (this.url.length > 0) {
-        var linkText = this.image.length > 0 ? imageHtml : 'View'
-        contentHtml += '<a href="' + this.url + '">' + linkText + '</a></div>'
-      } else if (this.image.length > 0) {
-        contentHtml += imageHtml
+        var linkContent = imageTag || this.url_text || 'View'
+        content += '<a href="' + this.url + '">' + linkContent + '</a>'
+      } else if (imageTag) {
+        content += imageTag
       }
-      infoWindow.setContent(contentHtml)
+      content += '</div>'
+      infoWindow.setContent(content)
       infoWindow.open(map, this)
     }
   }
@@ -233,12 +243,12 @@ if (typeof Object.assign !== 'function') {
   <div class="post-content" itemprop="articleBody">
     <p>Germany will always be one of my favourite places to visit, but as someone with quite a restricted diet (I don’t eat beef) I’ve always struggled to find foods that are fun, healthy, and varied. In recent years however, Berlin’s food scene has exploded and the results are phenomenal. Prenzlauer Berg in the Pankow district proved to have a huge variety of delicious eats, although we returned to Café Hilde three times.</p>
 
-<div id="3c36df50-bd54-49b8-a566-8e7833642444" style="width:600px;height:400px;"></div>
+<div id="689cd1e0-cdcd-41b4-a2ae-57950d44f5cf" style="width:600px;height:400px;"></div>
 <script type="text/javascript">
   jekyllMaps.register(
-    '3c36df50-bd54-49b8-a566-8e7833642444',
-    [{"latitude":52.53093,"longitude":13.41891,"title":"Café Hilde","url":"/2018/01/17/food-map-berlin.html","image":""},{"latitude":52.53158,"longitude":13.41703,"title":"Leibhaftig","url":"/2018/01/17/food-map-berlin.html","image":""},{"latitude":52.53448,"longitude":13.41943,"title":"Unami","url":"/2018/01/17/food-map-berlin.html","image":""},{"latitude":52.53977,"longitude":13.40992,"title":"Prater Biergarten Berlin","url":"/2018/01/17/food-map-berlin.html","image":""},{"latitude":52.5237,"longitude":13.40069,"title":"Curry61","url":"/2018/01/17/food-map-berlin.html","image":""},{"latitude":52.50986,"longitude":13.45102,"title":"Mustafas Gemüse Döner","url":"/2018/01/17/food-map-berlin.html","image":""}],
-    {"baseUrl":"","useCluster":true,"showMarker":true,"showMarkerPopup":true}
+    '689cd1e0-cdcd-41b4-a2ae-57950d44f5cf',
+    [{"latitude":52.53093,"longitude":13.41891,"title":"Café Hilde","icon":null,"url":"","url_text":null,"image":""},{"latitude":52.53158,"longitude":13.41703,"title":"Leibhaftig","icon":null,"url":"","url_text":null,"image":""},{"latitude":52.53448,"longitude":13.41943,"title":"Unami","icon":null,"url":"","url_text":null,"image":""},{"latitude":52.53977,"longitude":13.40992,"title":"Prater Biergarten Berlin","icon":null,"url":"","url_text":null,"image":""},{"latitude":52.5237,"longitude":13.40069,"title":"Curry61","icon":null,"url":"","url_text":null,"image":""},{"latitude":52.50986,"longitude":13.45102,"title":"Mustafas Gemüse Döner","icon":null,"url":"","url_text":null,"image":""}],
+    {"baseUrl":"","useCluster":true,"showMarker":true,"showMarkerPopup":true,"markerIcon":null}
   );
 </script>
 

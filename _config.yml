@@ -29,3 +29,10 @@ maps:
     api_key: AIzaSyDPEf-TJWEKGADr16dfEx9YmrQVzY7BVPA
     marker_cluster:
       enabled: false
+
+
+defaults:
+  - scope:
+      path: "assets/img"
+    values:
+      images: true

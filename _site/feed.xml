@@ -59,7 +59,7 @@ var jekyllMaps = (function() {
       var markers = item.locations.map(createMarker)
 
       map.fitBounds(bounds)
-      google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+      google.maps.event.addListenerOnce(map, 'idle', function() {
         if (this.customZoom) this.setZoom(this.customZoom)
       })
       if (mapOptions.useCluster) {
@@ -80,7 +80,9 @@ var jekyllMaps = (function() {
         position: position,
         title: location.title,
         image: location.image,
-        url: location.url.length > 0 ? mapOptions.baseUrl + location.url : '',
+        icon: location.icon || mapOptions.markerIcon,
+        url: markerUrl(mapOptions.baseUrl, location.url),
+        url_text: location.url_text,
         map: map
       })
       if (mapOptions.showMarkerPopup) marker.addListener('click', markerPopup)
@@ -88,17 +90,25 @@ var jekyllMaps = (function() {
       return marker
     }
 
+    function markerUrl(baseUrl, url) {
+      if (/^(https?|\/\/)/.test(url)) return url
+
+      return url.length > 0 ? baseUrl + url : ''
+    }
+
     function markerPopup() {
-      var contentHtml =
-        '<div class="map-info-window"><h5>' + this.title + '</h5>'
-      var imageHtml = '<img src="' + this.image + '" alt="' + this.title + '"/>'
+      var content = '<div class="map-info-window"><h5>' + this.title + '</h5>'
+      var imageTag =
+        this.image.length > 0 &&
+        '<img src="' + this.image + '" alt="' + this.title + '"/>'
       if (this.url.length > 0) {
-        var linkText = this.image.length > 0 ? imageHtml : 'View'
-        contentHtml += '<a href="' + this.url + '">' + linkText + '</a></div>'
-      } else if (this.image.length > 0) {
-        contentHtml += imageHtml
+        var linkContent = imageTag || this.url_text || 'View'
+        content += '<a href="' + this.url + '">' + linkContent + '</a>'
+      } else if (imageTag) {
+        content += imageTag
       }
-      infoWindow.setContent(contentHtml)
+      content += '</div>'
+      infoWindow.setContent(content)
       infoWindow.open(map, this)
     }
   }
@@ -157,20 +167,20 @@ if (typeof Object.assign !== 'function') {
     <description>Making Tasty Shit</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 17 Jan 2018 21:10:23 +0000</pubDate>
-    <lastBuildDate>Wed, 17 Jan 2018 21:10:23 +0000</lastBuildDate>
-    <generator>Jekyll v3.6.2</generator>
+    <pubDate>Sun, 18 Mar 2018 11:49:31 +0000</pubDate>
+    <lastBuildDate>Sun, 18 Mar 2018 11:49:31 +0000</lastBuildDate>
+    <generator>Jekyll v3.7.3</generator>
     
       <item>
         <title>Food Map: Berlin</title>
         <description>&lt;p&gt;Germany will always be one of my favourite places to visit, but as someone with quite a restricted diet (I don’t eat beef) I’ve always struggled to find foods that are fun, healthy, and varied. In recent years however, Berlin’s food scene has exploded and the results are phenomenal. Prenzlauer Berg in the Pankow district proved to have a huge variety of delicious eats, although we returned to Café Hilde three times.&lt;/p&gt;
 
-&lt;div id=&quot;3c36df50-bd54-49b8-a566-8e7833642444&quot; style=&quot;width:600px;height:400px;&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;689cd1e0-cdcd-41b4-a2ae-57950d44f5cf&quot; style=&quot;width:600px;height:400px;&quot;&gt;&lt;/div&gt;
 &lt;script type=&quot;text/javascript&quot;&gt;
   jekyllMaps.register(
-    '3c36df50-bd54-49b8-a566-8e7833642444',
-    [{&quot;latitude&quot;:52.53093,&quot;longitude&quot;:13.41891,&quot;title&quot;:&quot;Café Hilde&quot;,&quot;url&quot;:&quot;/2018/01/17/food-map-berlin.html&quot;,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.53158,&quot;longitude&quot;:13.41703,&quot;title&quot;:&quot;Leibhaftig&quot;,&quot;url&quot;:&quot;/2018/01/17/food-map-berlin.html&quot;,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.53448,&quot;longitude&quot;:13.41943,&quot;title&quot;:&quot;Unami&quot;,&quot;url&quot;:&quot;/2018/01/17/food-map-berlin.html&quot;,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.53977,&quot;longitude&quot;:13.40992,&quot;title&quot;:&quot;Prater Biergarten Berlin&quot;,&quot;url&quot;:&quot;/2018/01/17/food-map-berlin.html&quot;,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.5237,&quot;longitude&quot;:13.40069,&quot;title&quot;:&quot;Curry61&quot;,&quot;url&quot;:&quot;/2018/01/17/food-map-berlin.html&quot;,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.50986,&quot;longitude&quot;:13.45102,&quot;title&quot;:&quot;Mustafas Gemüse Döner&quot;,&quot;url&quot;:&quot;/2018/01/17/food-map-berlin.html&quot;,&quot;image&quot;:&quot;&quot;}],
-    {&quot;baseUrl&quot;:&quot;&quot;,&quot;useCluster&quot;:true,&quot;showMarker&quot;:true,&quot;showMarkerPopup&quot;:true}
+    '689cd1e0-cdcd-41b4-a2ae-57950d44f5cf',
+    [{&quot;latitude&quot;:52.53093,&quot;longitude&quot;:13.41891,&quot;title&quot;:&quot;Café Hilde&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.53158,&quot;longitude&quot;:13.41703,&quot;title&quot;:&quot;Leibhaftig&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.53448,&quot;longitude&quot;:13.41943,&quot;title&quot;:&quot;Unami&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.53977,&quot;longitude&quot;:13.40992,&quot;title&quot;:&quot;Prater Biergarten Berlin&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.5237,&quot;longitude&quot;:13.40069,&quot;title&quot;:&quot;Curry61&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;},{&quot;latitude&quot;:52.50986,&quot;longitude&quot;:13.45102,&quot;title&quot;:&quot;Mustafas Gemüse Döner&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;}],
+    {&quot;baseUrl&quot;:&quot;&quot;,&quot;useCluster&quot;:true,&quot;showMarker&quot;:true,&quot;showMarkerPopup&quot;:true,&quot;markerIcon&quot;:null}
   );
 &lt;/script&gt;
 
